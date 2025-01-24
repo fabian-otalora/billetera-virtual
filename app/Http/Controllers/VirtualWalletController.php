@@ -33,31 +33,32 @@ class VirtualWalletController extends Controller
             DB::commit();
 
             if ($newCustomer === false) {
-                DB::rollBack();  
-                return $this->sendError('El usuario ya se encuentra registrado en el sistema.', [], 500);
+                DB::rollBack();
+                $response = [
+                    "success" => false,
+                    "cod_error" => 500,
+                    "message_error" => "El usuario ya se encuentra registrado en el sistema."
+                ];
+                return response()->json($response, 500);
             }
 
-            return $this->sendResponse(
-                [
-                    'success' => true,
-                    'cod_error' => 00,
-                    'message_error' => '',
-                    'msg' => 'Usuario registrado con exito',
-                    new CustomerResource($newCustomer),
-                    201,
-                ]
-            );
+            $response = [
+                "success" => true,
+                "cod_error" => 00,
+                "message_error" => "",
+                "msg" => "Cliente registrado con exito",
+                "data" => new CustomerResource($newCustomer)
+            ];
+            return response()->json($response, 201);
 
-        } catch (\Throwable $th) {
-            DB::rollBack();  
-            return $this->sendError(
-                [
-                    'success' => false,
-                    'cod_error' => 500,
-                    'message_error' => $e->getMessage(),
-                ],
-                500
-            );
+        } catch (\Throwable $e) {
+            DB::rollBack(); 
+            $response = [
+                "success" => false,
+                "cod_error" => 500,
+                "message_error" => $e->getMessage()
+            ];
+            return response()->json($response, 500); 
         }
     }
 
@@ -72,37 +73,31 @@ class VirtualWalletController extends Controller
 
             if ($recharge === false) {
                 DB::rollBack();  
-                return $this->sendError(
-                    [
-                        'success' => false,
-                        'cod_error' => 500,
-                        'message_error' => 'El cliente no existe',
-                    ],
-                    500
-                );
+                $response = [
+                    "success" => false,
+                    "cod_error" => 500,
+                    "message_error" => "El cliente no existe."
+                ];
+                return response()->json($response, 500);
             }
 
-            return $this->sendResponse(
-                [
-                    'success' => true,
-                    'cod_error' => 00,
-                    'message_error' => '',
-                    'msg' => 'Recarga realizada con exito',
-                    new WalletResource($recharge),
-                    201,
-                ]
-            );
+            $response = [
+                "success" => true,
+                "cod_error" => 00,
+                "message_error" => "",
+                "msg" => "Recarga realizada con exito",
+                "data" => new WalletResource($recharge)
+            ];
+            return response()->json($response, 201);
 
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             DB::rollBack();  
-            return $this->sendError(
-                [
-                    'success' => false,
-                    'cod_error' => 500,
-                    'message_error' => $e->getMessage(),
-                ],
-                500
-            );
+            $response = [
+                "success" => false,
+                "cod_error" => 500,
+                "message_error" => $e->getMessage()
+            ];
+            return response()->json($response, 500);
         }
     }
 
@@ -117,41 +112,34 @@ class VirtualWalletController extends Controller
 
             if ($balance === false) {
                 DB::rollBack();  
-                return $this->sendError(
-                    [
-                        'success' => false,
-                        'cod_error' => 500,
-                        'message_error' => 'El cliente no existe',
-                    ],
-                    500
-                );
+                $response = [
+                    "success" => false,
+                    "cod_error" => 500,
+                    "message_error" => "El cliente no existe."
+                ];
+                return response()->json($response, 500);
             }
 
-            return $this->sendResponse(
-                [
-                    'success' => true,
-                    'cod_error' => 00,
-                    'message_error' => '',
-                    'msg' => 'Saldo en la billetera virtual',
-                    new WalletResource($balance),
-                    201,
-                ]
-            );
+            $response = [
+                "success" => true,
+                "cod_error" => 00,
+                "message_error" => "",
+                "msg" => "Saldo en la billetera virtual",
+                "data" => new WalletResource($balance)
+            ];
+            return response()->json($response, 201);
 
-        } catch (\Throwable $th) {
+        } catch (\Throwable $e) {
             DB::rollBack();  
-            return $this->sendError(
-                [
-                    'success' => false,
-                    'cod_error' => 500,
-                    'message_error' => $e->getMessage(),
-                ],
-                500
-            );
+            $response = [
+                "success" => false,
+                "cod_error" => 500,
+                "message_error" => $e->getMessage()
+            ];
+            return response()->json($response, 500);
         }
     }
 
 
-    
 
 }

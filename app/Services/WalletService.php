@@ -18,9 +18,10 @@ class WalletService{
             ->first();
 
         if ($customer) {
-            $wallet = new Wallet();
-            $wallet->customer_id = $customer->id;
-            $wallet->money = $data['money'];
+            $wallet = Wallet::where('customer_id','=',$customer->id)->first();
+            $money_old = $wallet->money;
+            $money_new = $data['money'];
+            $wallet->money = $money_old + $money_new;
             $wallet->save();
 
             return $wallet;
