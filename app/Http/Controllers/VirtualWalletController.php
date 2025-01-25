@@ -11,6 +11,8 @@ use App\Http\Requests\WalletRequest;
 use App\Services\WalletService;
 use App\Http\Resources\WalletResource;
 use App\Http\Requests\CheckBalanceRequest;
+use App\Http\Requests\PayRequest;
+use App\Http\Requests\ConfirmPaymentRequest;
 
 class VirtualWalletController extends Controller
 {
@@ -140,6 +142,83 @@ class VirtualWalletController extends Controller
         }
     }
 
+    /**
+     * Pagar
+     */
+    public function pay(PayRequest $request){
+        try {
+            DB::beginTransaction();
+            $pay = $this->walletService->pay($request->all());
+            DB::commit();
+
+            if ($pay === false) {
+                DB::rollBack();  
+                $response = [
+                    "success" => false,
+                    "cod_error" => 500,
+                    "message_error" => "El cliente no existe."
+                ];
+                return response()->json($response, 500);
+            }
+
+            $response = [
+                "success" => true,
+                "cod_error" => 00,
+                "message_error" => "",
+                "msg" => "Token generado, usar este token para confirmar la compra.",
+                "data" => new WalletResource($pay)
+            ];
+            return response()->json($response, 201);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();  
+            $response = [
+                "success" => false,
+                "cod_error" => 500,
+                "message_error" => $e->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
+
+    /**
+     * Confirmar pago
+     */
+    public function confirmPayment(PayRequest $request){
+        try {
+
+            DB::beginTransaction();
+            $purchase = $this->walletService->purchase($request->all());
+            DB::commit();
+
+            if ($purchase === false) {
+                DB::rollBack();  
+                $response = [
+                    "success" => false,
+                    "cod_error" => 500,
+                    "message_error" => "El cliente no existe o no tiene saldo suficiente en la cuenta."
+                ];
+                return response()->json($response, 500);
+            }
+
+            $response = [
+                "success" => true,
+                "cod_error" => 00,
+                "message_error" => "",
+                "msg" => "Compra realizada con exito."
+            ];
+            return response()->json($response, 201);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();  
+            $response = [
+                "success" => false,
+                "cod_error" => 500,
+                "message_error" => $e->getMessage()
+            ];
+            return response()->json($response, 500);
+        }
+    }
 
 
 }

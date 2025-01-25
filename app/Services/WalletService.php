@@ -49,4 +49,50 @@ class WalletService{
             return false;
         }
     }
+
+    /**
+     * Pagar
+     */
+    public function pay($data){
+        // Verificar que la cuenta exista
+        $customer = Customer::where('identification','=',$data['identification'])
+            ->where('cell_phone','=',$data['cell_phone'])
+            ->first();
+
+        if ($customer) {
+            $customer->tokens()->delete();
+            $authToken = $customer->createToken('auth-token')->plainTextToken;
+            return $authToken;
+        }else{
+            return false;
+        }
+    }
+
+    /**
+     * Confirmar Pago
+     */
+    public function purchase($data){
+        // Verificar que la cuenta exista
+        $customer = Customer::where('identification','=',$data['identification'])
+            ->where('cell_phone','=',$data['cell_phone'])
+            ->first();
+
+        if ($customer) {
+            $wallet = Wallet::where('customer_id','=',$customer->id)
+                ->first();
+
+            // Si no tiene saldo en la cuenta no puede comprar
+            if ($wallet->money <= 0) {
+                return false;
+            }
+
+            $money = $wallet->money;
+            $payment = $data['payment_money'];
+            $wallet->money = $money - $payment;
+            $wallet->save();
+        }else{
+            return false;
+        }
+    }
+    
 }
