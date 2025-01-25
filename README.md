@@ -33,6 +33,8 @@ Y su respuesta es en JSON
 }
 ```
 
+### Funcionalidades
+
 #### Registo de Clientes
 
 ```
