@@ -11,9 +11,18 @@ class CustomerService{
     public function save($data){
 
         // Validar si el usuario ya se encuentra registrado
-        $validateCustomer = Customer::where('identification','=',$data['identification'])->first();
-
-        if ($validateCustomer) {
+        $validateId = Customer::where('identification','=',$data['identification'])->first();
+        if ($validateId) {
+            return false;
+        }
+        // Validar si el usuario ya se encuentra registrado
+        $validateEmail = Customer::where('email','=',$data['email'])->first();
+        if ($validateEmail) {
+            return false;
+        }
+        // Validar si el usuario ya se encuentra registrado
+        $validateCellPhone = Customer::where('cell_phone','=',$data['cell_phone'])->first();
+        if ($validateCellPhone) {
             return false;
         }
 

@@ -11,9 +11,31 @@ Base de datos: MySQL 8.0.x
 
 ## API
 
+Los parametros se envian en formato JSON
+```
+{
+    "identification": 1234567890,
+    "cell_phone": 1224467990
+}
+```
+Y su respuesta es en JSON
+```
+{
+    "success": true,
+    "cod_error": 0,
+    "message_error": "",
+    "msg": "Saldo en la billetera virtual",
+    "data": {
+        "data": {
+            "money": "100"
+        }
+    }
+}
+```
+
 #### Registo de Clientes
 
-```http
+```
   POST /api/v1/newCustomer
 ```
 
@@ -26,7 +48,7 @@ Base de datos: MySQL 8.0.x
 
 #### Recarga de billetera
 
-```http
+```
   POST /api/v1/recharge
 ```
 
@@ -38,7 +60,7 @@ Base de datos: MySQL 8.0.x
 
 #### Consultar saldo
 
-```http
+```
   GET /api/v1/check
 ```
 
@@ -49,7 +71,7 @@ Base de datos: MySQL 8.0.x
 
 #### Pagar
 
-```http
+```
   POST /api/v1/pay
 ```
 
@@ -61,7 +83,7 @@ Base de datos: MySQL 8.0.x
 
 #### Confirmar pago
 
-```http
+```
   GET /api/v1/confirmPayment
 ```
 
